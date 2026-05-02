@@ -65,7 +65,7 @@ async def main():
     backend_task = asyncio.create_task(start_backend())
     try: await app._shutdown_event.wait()
     finally:
-        backend_task.cancel()
+        backend_task.cancel() 
         try: await backend_task
         except asyncio.CancelledError: pass
         await app.shutdown()

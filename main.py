@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import asyncio, io, signal, sys
+import asyncio, io, os, signal, sys
+os.environ["UVICORN_ACCESS_LOGGING"] = "0"
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 from app.core.logger import setup_logging, logger
@@ -48,11 +49,19 @@ class IReckonApp:
 
 async def start_backend():
     import uvicorn
+    import logging
+    logging.getLogger("uvicorn.access").handlers = []
+    logging.getLogger("uvicorn.access").propagate = False
     host = config_manager.get("server.host", "0.0.0.0")
     port = config_manager.get("server.port", 8000)
     log_level = config_manager.get("server.log_level", "info")
-    config = uvicorn.Config("app.web.api:app", host=host, port=port, log_level=log_level, loop="asyncio")
-    logger.info(f"后台 API 服务已启动 -> http://{host}:{port}/docs")
+    config = uvicorn.Config("app.web.api:app", host=host, port=port, log_level=log_level, loop="asyncio", access_log=False)
+    logger.info(f"\n{'='*50}\n  IReckon 服务已启动\n{'='*50}\n"
+                f"  API:       http://{host}:{port}\n"
+                f"  文档:      http://{host}:{port}/docs\n"
+                f"  前端:      http://localhost:8501\n"
+                f"  状态检查:  http://{host}:{port}/api/health\n"
+                f"{'='*50}")
     await uvicorn.Server(config).serve()
 
 async def main():

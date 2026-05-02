@@ -7,8 +7,6 @@ from loguru import logger
 _setup_lock = threading.Lock()
 _setup_done = False
 _log_queue = queue.Queue(maxsize=5000)
-logger.remove()
-logger.add(sys.stderr, level="DEBUG", colorize=True)
 
 def setup_logging():
     global _setup_done

@@ -10,3 +10,6 @@ data/states/
 data/outputs/
 data/knowledge_base/
 .streamlit/secrets.toml
+dist/
+build/
+*.spec

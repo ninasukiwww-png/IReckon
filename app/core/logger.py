@@ -8,6 +8,9 @@ _setup_lock = threading.Lock()
 _setup_done = False
 _log_queue = queue.Queue(maxsize=5000)
 
+_LOG_FORMAT = "<green>{time:HH:mm:ss}</green> | <level>{level:<7}</level> | <level>{message}</level>"
+_FILE_FORMAT = "{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}"
+
 def setup_logging():
     global _setup_done
     with _setup_lock:
@@ -19,8 +22,8 @@ def setup_logging():
         log_dir = data_dir / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
         logger.remove()
-        logger.add(sys.stdout, format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>", level=log_level, colorize=True)
-        logger.add(log_dir / "app_{time:YYYY-MM-DD}.log", format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line} | {message}", level="DEBUG", rotation="10 MB", retention="30 days", encoding="utf-8")
+        logger.add(sys.stdout, format=_LOG_FORMAT, level=log_level, colorize=True)
+        logger.add(log_dir / "app_{time:YYYY-MM-DD}.log", format=_FILE_FORMAT, level="DEBUG", rotation="10 MB", retention="30 days", encoding="utf-8")
         def conversation_filter(record):
             extra = record.get("extra")
             if not isinstance(extra, dict): return False
@@ -30,7 +33,6 @@ def setup_logging():
             try: _log_queue.put_nowait(message.record["level"].name + "|" + str(message))
             except queue.Full: pass
         logger.add(enqueue_log, level="INFO", format="{message}")
-        logger.info("日志系统初始化完成")
 
 def log_conversation(role: str, content: str, metadata: Optional[dict] = None):
     record = {"role": role, "content": content, "metadata": metadata or {}, "timestamp": datetime.now(timezone.utc).isoformat()}

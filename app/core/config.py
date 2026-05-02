@@ -61,7 +61,7 @@ class ConfigManager:
         with self._config_lock:
             self.config = self._expand_env_vars(raw)
 
-        logger.info(f"配置加载成功: {self.config_path}")
+        logger.debug(f"配置加载成功: {self.config_path}")
 
     def _expand_env_vars(self, obj: Any) -> Any:
         if isinstance(obj, dict):

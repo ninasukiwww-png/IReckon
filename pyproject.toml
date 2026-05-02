@@ -4,7 +4,7 @@ build-backend = "setuptools.backends._legacy:_Backend"
 
 [project]
 name = "ireckon"
-version = "2.0.0"
+version = "0.1.0"
 description = "多智能体自主编程系统 — AI 工厂"
 readme = "README.md"
 requires-python = ">=3.10"

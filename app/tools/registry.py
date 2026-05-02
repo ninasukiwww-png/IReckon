@@ -19,8 +19,8 @@ async def register_builtin_tools(builtin_dir: str = "app/tools/builtin"):
             logger.warning(f"工具目录 {tool_dir.name} 缺少 manifest.json，跳过")
             continue
 
-        with open(manifest_path, "r", encoding="utf-8") as f:
-            manifest = json.load(f)
+        with open(manifest_path, "r", encoding="utf-8-sig") as f:
+            manifest = json.load(f, strict=False)
 
         py_files = list(tool_dir.glob("*.py"))
         if not py_files:

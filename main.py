@@ -38,12 +38,13 @@ class IReckonApp:
     def _start_frontend(self):
         try:
             import streamlit
-            script = os.path.join(os.path.dirname(__file__), "ui", "app.py")
+            root = os.path.dirname(os.path.abspath(__file__))
+            script = os.path.join(root, "ui", "app.py")
             self._frontend_proc = subprocess.Popen(
                 [sys.executable, "-m", "streamlit", "run", script,
                  "--server.port", "8501", "--server.headless", "true",
                  "--browser.gatherUsageStats", "false"],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
         except Exception as e:
             logger.warning(f"前端启动失败: {e}")

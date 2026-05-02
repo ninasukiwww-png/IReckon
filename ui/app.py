@@ -1,12 +1,15 @@
 import streamlit as st
 import time
 import os
-from .components.chat import render_chat_view
-from .components.dashboard import render_dashboard
-from .components.config_panel import render_config_panel
-from .components.style import inject_custom_css, get_theme
-from .utils.api import APIClient
-from .utils.ws import WebSocketClient, process_incoming_messages
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from ui.components.chat import render_chat_view
+from ui.components.dashboard import render_dashboard
+from ui.components.config_panel import render_config_panel
+from ui.components.style import inject_custom_css, get_theme
+from ui.utils.api import APIClient
+from ui.utils.ws import WebSocketClient, process_incoming_messages
 
 st.set_page_config(page_title="俺寻思 AI 工厂", page_icon="🤖", layout="wide", initial_sidebar_state="expanded")
 inject_custom_css()

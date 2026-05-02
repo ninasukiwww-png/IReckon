@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-import asyncio, signal
+import asyncio, io, signal, sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 from app.core.logger import setup_logging, logger
 from app.core.database import db
 from app.core.config import config_manager

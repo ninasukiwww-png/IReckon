@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import asyncio, io, logging, os, signal, sys
+import asyncio, io, logging, os, signal, subprocess, sys, webbrowser
+
 os.environ["UVICORN_ACCESS_LOGGING"] = "0"
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
@@ -15,10 +16,12 @@ from app.engine.learner import idle_loop
 from app.web.ws import log_consumer
 from app.tools.registry import register_builtin_tools
 
+
 class IReckonApp:
     def __init__(self):
         self._shutdown_event = asyncio.Event()
         self._tasks = []
+        self._frontend_proc = None
 
     async def initialize(self):
         setup_logging()
@@ -29,7 +32,21 @@ class IReckonApp:
         await register_builtin_tools()
         self._tasks.append(asyncio.create_task(idle_loop.run()))
         self._tasks.append(asyncio.create_task(log_consumer()))
+        self._start_frontend()
         logger.info("系统初始化完成")
+
+    def _start_frontend(self):
+        try:
+            import streamlit
+            script = os.path.join(os.path.dirname(__file__), "ui", "app.py")
+            self._frontend_proc = subprocess.Popen(
+                [sys.executable, "-m", "streamlit", "run", script,
+                 "--server.port", "8501", "--server.headless", "true",
+                 "--browser.gatherUsageStats", "false"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+        except Exception as e:
+            logger.warning(f"前端启动失败: {e}")
 
     async def _check_update(self):
         if not updater.should_check():
@@ -46,8 +63,13 @@ class IReckonApp:
             task.cancel()
             try: await task
             except asyncio.CancelledError: pass
+        if self._frontend_proc:
+            self._frontend_proc.terminate()
+            try: self._frontend_proc.wait(timeout=5)
+            except: self._frontend_proc.kill()
         await db.close()
         logger.info("系统已关闭")
+
 
 async def start_backend():
     import uvicorn
@@ -59,12 +81,14 @@ async def start_backend():
     port = config_manager.get("server.port", 8000)
     config = uvicorn.Config("app.web.api:app", host=host, port=port, log_level="warning", loop="asyncio", access_log=False)
     logger.info(f"\n{'='*46}\n  IReckon v{config_manager.get('system.version')} 已启动\n{'='*46}\n"
-                f"  API       http://{host}:{port}\n"
-                f"  文档      http://{host}:{port}/docs\n"
-                f"  前端      http://localhost:8501\n"
-                f"  状态      http://{host}:{port}/api/health\n"
+                f"  后端 API   http://{host}:{port}\n"
+                f"  交互文档   http://{host}:{port}/docs\n"
+                f"  前端界面   http://localhost:8501\n"
+                f"  健康检查   http://{host}:{port}/api/health\n"
                 f"{'='*46}")
+    webbrowser.open("http://localhost:8501")
     await uvicorn.Server(config).serve()
+
 
 async def main():
     app = IReckonApp()
@@ -76,10 +100,11 @@ async def main():
     backend_task = asyncio.create_task(start_backend())
     try: await app._shutdown_event.wait()
     finally:
-        backend_task.cancel() 
+        backend_task.cancel()
         try: await backend_task
         except asyncio.CancelledError: pass
         await app.shutdown()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

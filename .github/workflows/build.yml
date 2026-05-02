@@ -1,0 +1,117 @@
+name: Build EXE
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build backend EXE
+        run: |
+          python -m PyInstaller --name ireckon-backend `
+            --distpath dist/IReckon --workpath build `
+            --add-data "config;config" `
+            --hidden-import "app.web.api" `
+            --hidden-import "app.engine.self_improve" `
+            --hidden-import "app.engine.style" `
+            --hidden-import "app.engine.learner" `
+            --hidden-import "app.engine.registry" `
+            --hidden-import "app.engine.tasks" `
+            --hidden-import "app.engine.room" `
+            --hidden-import "app.engine.machine" `
+            --hidden-import "app.engine.board" `
+            --hidden-import "app.engine.detector" `
+            --hidden-import "app.engine.cost" `
+            --hidden-import "app.agents.base" `
+            --hidden-import "app.agents.executor" `
+            --hidden-import "app.agents.scheduler" `
+            --hidden-import "app.agents.reviewer" `
+            --hidden-import "app.agents.creative" `
+            --hidden-import "app.agents.deliverer" `
+            --hidden-import "app.agents.learner" `
+            --hidden-import "app.agents.tool_manager" `
+            --hidden-import "app.agents.content_filter" `
+            --hidden-import "app.llm.client" `
+            --hidden-import "app.llm.pool" `
+            --hidden-import "app.tools.registry" `
+            --hidden-import "app.tools.library" `
+            --hidden-import "app.tools.assembler" `
+            --hidden-import "app.security.scanner" `
+            --hidden-import "app.security.filter" `
+            --hidden-import "app.security.sandbox" `
+            --hidden-import "app.security.mining" `
+            --hidden-import "app.security.supply" `
+            --hidden-import "app.knowledge.vector" `
+            --hidden-import "app.knowledge.files" `
+            --hidden-import "app.web.ws" `
+            --hidden-import "app.web.push" `
+            --hidden-import "app.core.updater" `
+            --hidden-import "uvicorn" `
+            --hidden-import "multipart" `
+            --hidden-import "watchdog" `
+            --collect-submodules "chromadb" `
+            --noconfirm --onedir main.py
+
+      - name: Build frontend EXE
+        run: |
+          python -m PyInstaller --name ireckon-frontend `
+            --distpath dist/IReckon --workpath build `
+            --add-data "ui;ui" `
+            --add-data "config;config" `
+            --add-data ".streamlit;.streamlit" `
+            --hidden-import "streamlit.web.bootstrap" `
+            --collect-all "streamlit" `
+            --noconfirm --onedir run_streamlit.py
+
+      - name: Create launcher
+        run: |
+          $launcher = @"
+@echo off
+title IReckon AI Factory
+echo ============================================
+echo   IReckon AI Factory
+echo ============================================
+echo.
+start "" "%~dp0ireckon-backend\ireckon-backend.exe"
+echo [BACKEND] Starting... (port 8000)
+timeout /t 3 /nobreak >nul
+start "" "%~dp0ireckon-frontend\ireckon-frontend.exe"
+echo [FRONTEND] Starting... (port 8501)
+timeout /t 5 /nobreak >nul
+echo.
+echo   Backend: http://localhost:8000/docs
+echo   Frontend: http://localhost:8501
+echo.
+start http://localhost:8501
+echo Close this window to stop
+echo.
+pause >nul
+taskkill /f /im ireckon-backend.exe >nul 2>&1
+taskkill /f /im ireckon-frontend.exe >nul 2>&1
+"@
+          $launcher | Out-File -FilePath dist/IReckon/启动IReckon.bat -Encoding default
+
+      - name: Zip package
+        run: |
+          Compress-Archive -Path dist/IReckon/* -DestinationPath IReckon-${{ github.ref_name }}-win64.zip -Force
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: IReckon-${{ github.ref_name }}-win64.zip

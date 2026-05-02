@@ -1,4 +1,4 @@
-# IReckon — 俺寻思 AI 工厂
+# IReckon — 俺寻思 AI 工厂 和一位
 
 > *"俺寻思能行"* — Warhammer 40K Orks
 

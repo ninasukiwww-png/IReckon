@@ -17,10 +17,16 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           pip install pyinstaller
+          cd frontend && npm ci && cd ..
 
       - name: Build backend EXE
         run: |
@@ -68,19 +74,23 @@ jobs:
             --collect-submodules "chromadb" `
             --noconfirm --onedir main.py
 
-      - name: Build frontend EXE
+      - name: Build frontend
         run: |
-          python -m PyInstaller --name ireckon-frontend `
-            --distpath dist/IReckon --workpath build `
-            --add-data "ui;ui" `
-            --add-data "config;config" `
-            --add-data ".streamlit;.streamlit" `
-            --hidden-import "streamlit.web.bootstrap" `
-            --collect-all "streamlit" `
-            --noconfirm --onedir run_streamlit.py
+          cd frontend && npm run build && cd ..
+
+      - name: Copy frontend dist
+        run: |
+          mkdir -p dist/IReckon/frontend
+          copy-item -Recurse -Force frontend/dist dist/IReckon/frontend/
 
       - name: Create launcher
-        run: copy scripts\launcher.bat dist\IReckon\启动IReckon.bat
+        run: |
+          @"
+          @echo off
+          start "" "%~dp0ireckon-backend\main.exe"
+          timeout /t 3 /nobreak >nul
+          start "" "%~dp0frontend\dist\index.html"
+          "@ | Out-File -Encoding ASCII dist/IReckon/启动IReckon.bat
 
       - name: Zip package
         run: |

@@ -30,7 +30,7 @@ bash run.sh
 
 # 方式二：分别启动（了解一下嘛～）
 python -m uvicorn app.web.api:app --host 0.0.0.0 --port 8000   # 后端酱～
-streamlit run ui/app.py --server.port 8501                       # 前端酱～
+cd frontend && npm run dev                                       # 前端酱～
 
 # 方式三：启动前检查环境（确认一下没问题喵）
 bash run.sh --check
@@ -38,7 +38,7 @@ bash run.sh --check
 
 启动后就可以玩啦：
 - 后端 API: `http://localhost:8000` — Swagger 文档 `/docs`
-- 前端 UI: `http://localhost:8501` — Streamlit 界面
+- 前端 UI: `http://localhost:5173` — Vue3 界面
 
 ### 使用流程 (超简单的五步走～)
 
@@ -54,7 +54,7 @@ bash run.sh --check
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                    Streamlit UI (port 8501)               │
+│                   Vue3 Frontend (port 5173)                 │
 │   Chat / Dashboard / Config Panel / Theme Selector        │
 └────────────────────────┬─────────────────────────────────┘
                           │ HTTP / WebSocket
@@ -229,7 +229,7 @@ curl -X POST http://localhost:8000/api/config/update \
 | 向量数据库 | ChromaDB |
 | 关系数据库 | SQLite (aiosqlite) |
 | 后端框架 | FastAPI + WebSocket |
-| 前端框架 | Streamlit |
+| 前端框架 | Vue 3 + Vite |
 | 配置管理 | YAML + 环境变量 + watchdog 热重载 |
 | 日志 | loguru |
 | 安全扫描 | Bandit, semgrep |
@@ -321,16 +321,22 @@ IReckon/
 │       ├── ws.py              #   WebSocket 处理 (实时通信桥梁)
 │       └── push.py            #   WebSocket 推送 (消息推送员)
 
-├── ui/                        # 前端包 ( Streamlit 版本 )
-│   ├── app.py                 #   Streamlit 主入口 (开始的地方)
-│   ├── components/            #   UI 组件 (积木们！)
-│   │   ├── chat.py            #     聊天视图 (聊聊天～)
-│   │   ├── dashboard.py       #     仪表盘 (数据展示台)
-│   │   ├── config_panel.py    #     配置面板 (设置小天地)
-│   │   └── style.py           #     CSS 样式注入 (美美哒！)
-│   └── utils/                 #   前端工具
-│       ├── api.py             #     HTTP 客户端 (请求小助手)
-│       └── ws.py              #     WebSocket 客户端 (实时小通道)
+├── frontend/                 # Vue3 前端
+│   ├── src/                   #   源代码
+│   │   ├── views/             #     页面视图
+│   │   │   ├── ChatView.vue   #       聊天页面
+│   │   │   ├── DashboardView.vue  #   仪表盘
+│   │   │   ├── TasksView.vue  #       任务管理
+│   │   │   ├── AIInstancesView.vue  #  AI 实例
+│   │   │   └── SettingsView.vue  #    设置
+│   │   ├── stores/            #     状态管理
+│   │   ├── api/               #     API 封装
+│   │   ├── router.js          #     路由配置
+│   │   ├── main.js            #     入口文件
+│   │   └── App.vue            #     根组件
+│   ├── package.json           #   依赖配置
+│   ├── vite.config.js         #   Vite 配置
+│   └── index.html             #   HTML 入口
 
 ├── config/                    # 配置 & 模板
 │   ├── config.yaml            #   主配置 (总设置！)
@@ -341,8 +347,7 @@ IReckon/
 │   ├── preflight.sh           #   环境预检 (出发前检查！)
 │   └── test_run.py            #   功能测试 (跑一跑试试看)
 
-├── .streamlit/                # Streamlit 配置
-│   └── config.toml            #   主题 / 服务配置
+#   (其他配置文件)
 
 └── data/                      # 运行时数据（gitignored）
     ├── .key                   #   加密密钥 (保密小密码)
@@ -368,7 +373,7 @@ A: 在 UI 的 Config Panel 中添加 AI Instance，或修改 `config/config.yaml
 A: 可以在 UI 中撤销任务，或通过 API `POST /api/tasks/{id}/cancel` 取消后恢复哦！
 
 **Q: 如何在 Windows 上运行？**  
-A: 使用 `python main.py` 启动后端，另一个终端运行 `streamlit run ui/app.py` 就可以！
+A: 使用 `python main.py` 启动（会自动安装前端依赖并启动 Vue 前端），或者手动 `cd frontend && npm run dev` 就可以！
 
 **Q: 如何调试 Agent 输出？**  
 A: 设置 `system.log_level: DEBUG` 查看详细日志，或在 UI 的 Chat 页面查看 L2 层消息～

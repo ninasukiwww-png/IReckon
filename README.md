@@ -1,19 +1,20 @@
-# IReckon — 俺寻思 AI 工厂
+# IReckon — 俺寻思 AI 工厂 (๑•́ ∀ •̀๑)
 
-> *"IReckon" — Orkish for "I think it can work"*
+> *"IReckon" — Orkish for "I think it can work"
 
-**IReckon** 是一个**多智能体自主编程系统**。输入自然语言需求，AI 团队自动完成规划、编码、审查、修改、交付全流程，无需人工干预。
+**IReckon** 是一个敲腻害的**多智能体自主编程系统**喵～ (≧∀≦)ゞ
+只需要输入自然语言需求，AI 小伙伴们就会自动帮你完成规划、编码、审查、修改、交付全流程，完全不需要人工干预呢！是不是超级方便呀～ ✨
 
 ---
 
-## 快速开始
+## 🚀 快速开始 (快来玩嘛～)
 
-### 环境要求
+### 环境要求 (要先准备好哦)
 
-- Python 3.10+
-- LLM 端点（默认 Ollama `http://localhost:11434` + `qwen2.5:7b`）
+- Python 3.10+ 喵～
+- LLM 端点（默认 Ollama `http://localhost:11434` + `qwen2.5:7b`，不会设置的话问问度娘吧～）
 
-### 安装
+### 安装 (安装超简单的！)
 
 ```bash
 git clone https://github.com/ninasukiwww-png/IReckon.git
@@ -21,48 +22,48 @@ cd IReckon
 pip install -r requirements.txt
 ```
 
-### 启动
+### 启动 (biu~ 启动啦！)
 
 ```bash
-# 方式一：一键启动（后端 + 前端）
+# 方式一：一键启动（后端 + 前端）—— 推荐懒人用法！
 bash run.sh
 
-# 方式二：分别启动
-python -m uvicorn app.web.api:app --host 0.0.0.0 --port 8000   # 后端
-streamlit run ui/app.py --server.port 8501                       # 前端
+# 方式二：分别启动（了解一下嘛～）
+python -m uvicorn app.web.api:app --host 0.0.0.0 --port 8000   # 后端酱～
+streamlit run ui/app.py --server.port 8501                       # 前端酱～
 
-# 方式三：启动前检查环境
+# 方式三：启动前检查环境（确认一下没问题喵）
 bash run.sh --check
 ```
 
-启动后访问：
+启动后就可以玩啦：
 - 后端 API: `http://localhost:8000` — Swagger 文档 `/docs`
 - 前端 UI: `http://localhost:8501` — Streamlit 界面
 
-### 使用流程
+### 使用流程 (超简单的五步走～)
 
-1. 打开前端 UI，点击 **New Task**
-2. 输入自然语言需求，例如 `"创建一个 Flask TODO 应用，支持增删改查"`
-3. AI 团队自动执行：规划 → 编码 → 审查 → 修改 → 交付
-4. 在 Chat / Dashboard 页面实时查看进度
-5. 成品输出到 `data/outputs/{task_id}/`
+1. 打开前端 UI，点击 **New Task** ✿
+2. 输入自然语言需求，比如 `"创建一个 Flask TODO 应用，支持增删改查"` ✨
+3. AI 团队自动执行：规划 → 编码 → 审查 → 修改 → 交付 (≧∇≦)
+4. 在 Chat / Dashboard 页面实时查看进度 (实时监控超酷的！)
+5. 成品输出到 `data/outputs/{task_id}/` ✧(｡•̀ᴗ-)✧
 
 ---
 
-## 架构
+## 🏗️ 架构 (看看就好，别怕～)
 
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                    Streamlit UI (port 8501)               │
 │   Chat / Dashboard / Config Panel / Theme Selector        │
 └────────────────────────┬─────────────────────────────────┘
-                         │ HTTP / WebSocket
+                          │ HTTP / WebSocket
 ┌────────────────────────▼─────────────────────────────────┐
 │                   FastAPI Backend (port 8000)              │
 │   REST API (/api/tasks, /api/ai-instances, /api/config)   │
 │   WebSocket (/ws/{task_id})                               │
 └────────────────────────┬─────────────────────────────────┘
-                         │
+                          │
 ┌────────────────────────▼─────────────────────────────────┐
 │                    Workflow Engine                         │
 │   ┌──────────┐   ┌──────────┐   ┌──────────┐              │
@@ -73,7 +74,7 @@ bash run.sh --check
 │         └───────────────────│  Revise / Deliver│            │
 │                             └─────────────────┘            │
 └────────────────────────┬─────────────────────────────────┘
-                         │
+                          │
 ┌────────────────────────▼─────────────────────────────────┐
 │                    AI Agent Team                           │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐     │
@@ -83,7 +84,7 @@ bash run.sh --check
 │  │ Creative │ │ Learner  │ │Tool Mgr  │                   │
 │  └──────────┘ └──────────┘ └──────────┘                   │
 └────────────────────────┬─────────────────────────────────┘
-                         │
+                          │
 ┌────────────────────────▼─────────────────────────────────┐
 │                  Infrastructure                            │
 │  LLM Pool (litellm) │ ChromaDB │ SQLite │ Security Suite   │
@@ -92,21 +93,21 @@ bash run.sh --check
 
 ---
 
-## AI 角色
+## 🤖 AI 角色 (分工合作效率高！)
 
 | 角色 | 职责 |
 |------|------|
-| **Scheduler** (调度员) | 将需求拆解为可执行的阶段计划，为每个阶段招募 AI 成员 |
-| **Executor** (开发者) | 编写代码、应用 diff 补丁、调试修复 |
-| **Reviewer** (审查员) | 正确性审查 + 效率/架构审查，双重把关 |
-| **Deliverer** (交付员) | 打包产物、生成 READY.txt、归档输出 |
-| **Creative** (创意官) | 头脑风暴、方案设计、技术选型建议 |
-| **Learner** (学习者) | 空闲时爬取 GitHub Trending，学习开源模式 |
-| **Tool Manager** (工具管理) | 管理工具零件库，按需调用内置工具 |
+| **Scheduler** (调度员酱) | 把需求拆成小任务，给每个阶段找合适的 AI 小伙伴～ |
+| **Executor** (开发者酱) | 写代码、打补丁、调试修复，超级能干的！ |
+| **Reviewer** (审查员酱) | 正确性审查 + 效率/架构审查，双重把关超严格！ |
+| **Deliverer** (交付员酱) | 打包产物、生成 READY.txt、归档输出，完美主义者！ |
+| **Creative** (创意官酱) | 头脑风暴、方案设计、技术选型建议，脑洞大开！ |
+| **Learner** (学习者酱) | 空闲时爬取 GitHub Trending，学习开源模式，超爱学习的！ |
+| **Tool Manager** (工具管理酱) | 管理工具零件库，按需调用内置工具，管家属性！ |
 
-## 工作流
+## 🔄 工作流 (循环超有趣的！)
 
-IReckon 使用 **LangGraph** 构建有向状态图：
+IReckon 用 **LangGraph** 构建敲智能的有向状态图～
 
 ```
 planning ──▶ execute ──▶ review ──┐
@@ -114,61 +115,61 @@ planning ──▶ execute ──▶ review ──┐
                 │      ┌─────┘     │
                 │      ▼           ▼
                 └── revise     deliver ──▶ END
-                                   
+                                    
                 fail ──▶ handle_error ──▶ END
 ```
 
 - **review_router**: 审查通过 → 交付；需修改 → 修订；失败 → 错误处理
 - **revise_router**: 状态为 executing → 继续执行；否则 → 重新审查
-- 超过 3 轮修订自动升级到高性能模型
+- 超过 3 轮修订自动升级到高性能模型（偷懒的最高境界！）
 
 ---
 
-## 特性
+## ✨ 特性 (亮点多多！)
 
-### 核心
-- **多角色 AI 团队** — 7 种专业角色协同工作
-- **全自动交付** — 提需求 → 出成品，零人工介入
-- **LangGraph 状态机** — 带条件路由的正式工作流
-- **双重审查** — 正确性 + 效率架构双重把关
-- **智能重试** — 审查失败自动修订，超过阈值自动换模型
+### 核心 (最重要的部分！)
+- **多角色 AI 团队** — 7 种专业角色协同工作，分工明确！
+- **全自动交付** — 提需求 → 出成品，零人工介入，躺平就完事！
+- **LangGraph 状态机** — 带条件路由的正式工作流，稳得很！
+- **双重审查** — 正确性 + 效率架构双重把关，不放过任何小问题！
+- **智能重试** — 审查失败自动修订，超过阈值自动换模型，超智能的！
 
-### LLM 与 AI
+### LLM 与 AI (AI 大脑超重要！)
 - **模型无关** — 通过 litellm 支持 100+ 模型（Ollama / OpenAI / Anthropic / Google / Azure 等）
 - **能力池** — 多端点管理、自动故障转移、健康检测、冷却机制
 - **流式/非流式** — 自动降级、指数退避重试
 
-### 安全
-- **代码扫描** — 集成 Bandit / semgrep
+### 安全 (安全第一！)
+- **代码扫描** — 集成 Bandit / semgrep，坏代码无处遁形！
 - **命令分级** — L1 自动执行 / L2 投票阈值 / L3 拦截
-- **沙箱执行** — udocker 容器隔离
-- **供应链防火墙** — pip / npm 黑名单过滤
-- **挖矿检测** — 进程命令行匹配
+- **沙箱执行** — udocker 容器隔离，危险操作也不怕！
+- **供应链防火墙** — pip / npm 黑名单过滤，坏东西进不来！
+- **挖矿检测** — 进程命令行匹配，守护你的算力！
 
-### 用户体验
-- **实时推送** — WebSocket 推送进度、日志、消息
-- **可定制主题** — catgirl / programmer 角色扮演主题
-- **任务快照** — 支持暂停 / 恢复
-- **配置热重载** — YAML 修改自动生效
-- **空闲学习** — 无任务时自动学习 GitHub Trending
+### 用户体验 (用着超舒服的！)
+- **实时推送** — WebSocket 推送进度、日志、消息，随时掌握动态！
+- **可定制主题** — catgirl / programmer 角色扮演主题，换装play！
+- **任务快照** — 支持暂停 / 恢复，想停就停超自由！
+- **配置热重载** — YAML 修改自动生效，改完不用重启！
+- **空闲学习** — 无任务时自动学习 GitHub Trending，超爱学习的酱酱！
 
 ---
 
-## 配置
+## ⚙️ 配置 (调一调更顺手！)
 
-所有配置集中在 `config/config.yaml`，支持环境变量引用 `${VAR:-default}` 和热重载。
+所有配置集中在 `config/config.yaml`，支持环境变量引用 `${VAR:-default}` 和热重载～
 
-### 核心配置项
+### 核心配置项 (了解一下比较好！)
 
 ```yaml
 server:
   host: 0.0.0.0       # 服务监听地址
-  port: 8000            # 服务端口
-  log_level: INFO       # 日志级别
+  port: 8000          # 服务端口
+  log_level: INFO     # 日志级别
 
 ai_pool:
   default_model: qwen2.5:7b   # 默认 LLM 模型
-  instances:                    # AI 端点列表
+  instances:                  # AI 端点列表
     - id: local-ollama-qwen
       model: ollama/qwen2.5:7b
       endpoint: http://localhost:11434
@@ -180,10 +181,10 @@ ui:
 
 task_defaults:
   max_review_rounds: 5         # 最大审查轮次
-  loop_detection_max_rounds: 5 # 循环检测阈值
+  loop_detection_max_rounds: 5  # 循环检测阈值
 ```
 
-可在前端 UI 的 Config Panel 中实时修改，或通过 API：
+可以在前端 UI 的 Config Panel 实时修改，也可以用 API：
 
 ```bash
 curl -X POST http://localhost:8000/api/config/update \
@@ -193,7 +194,7 @@ curl -X POST http://localhost:8000/api/config/update \
 
 ---
 
-## API 文档
+## 📚 API 文档 (码农必备！)
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
@@ -218,7 +219,7 @@ curl -X POST http://localhost:8000/api/config/update \
 
 ---
 
-## 技术栈
+## 🛠️ 技术栈 (都是好东西！)
 
 | 模块 | 技术 |
 |------|------|
@@ -238,7 +239,7 @@ curl -X POST http://localhost:8000/api/config/update \
 
 ---
 
-## 开发
+## 💻 开发 (一起来玩嘛～)
 
 ```bash
 # 环境检查
@@ -252,7 +253,7 @@ bandit -r app/
 semgrep --config=auto app/
 ```
 
-### 环境变量
+### 环境变量 (了解一下不吃亏！)
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
@@ -263,117 +264,119 @@ semgrep --config=auto app/
 
 ---
 
-## 目录结构
+## 📁 目录结构 (看看都有啥～)
 
 ```
 IReckon/
-├── main.py                    # 应用入口
-├── run.sh                     # 启动脚本
-├── requirements.txt           # 依赖
-├── pyproject.toml             # 项目元数据
-│
+├── main.py                    # 应用入口 (程序酱的开始！)
+├── run.sh                     # 启动脚本 (一键启动超方便)
+├── requirements.txt           # 依赖 ( pip install 就完事 )
+├── pyproject.toml             # 项目元数据 ( metadata~ )
+
 ├── app/                       # 后端包
 │   ├── agents/                # AI 角色实现
-│   │   ├── base.py            #   基类
-│   │   ├── scheduler.py       #   调度员
-│   │   ├── executor.py        #   开发者（含 diff 补丁）
-│   │   ├── reviewer.py        #   审查员
-│   │   ├── deliverer.py       #   交付员
-│   │   ├── creative.py        #   创意官
-│   │   ├── learner.py         #   学习者
-│   │   ├── tool_manager.py    #   工具管理
-│   │   └── content_filter.py  #   内容安全过滤
+│   │   ├── base.py            #   基类 (大家的爸爸！)
+│   │   ├── scheduler.py       #   调度员 (分发任务的小天使)
+│   │   ├── executor.py        #   开发者 (写代码的超人！)
+│   │   ├── reviewer.py        #   审查员 (找茬但为了你好！)
+│   │   ├── deliverer.py       #   交付员 (打包小能手)
+│   │   ├── creative.py        #   创意官 (脑洞担当！)
+│   │   ├── learner.py         #   学习者 (爱学习的乖宝宝)
+│   │   ├── tool_manager.py    #   工具管理 (工具人但很重要！)
+│   │   └── content_filter.py  #   内容安全过滤 (守护者！)
 │   ├── core/                  # 基础设施
-│   │   ├── config.py          #   配置管理（热重载）
-│   │   ├── database.py        #   SQLite + Fernet 加密
-│   │   ├── logger.py          #   loguru 日志
-│   │   └── state.py           #   任务状态快照
-│   ├── engine/                # 工作流引擎
-│   │   ├── machine.py         #   LangGraph 状态机
-│   │   ├── tasks.py           #   任务生命周期
-│   │   ├── room.py            #   会议室（多 agent 通信）
-│   │   ├── board.py           #   Kanban 看板
-│   │   ├── registry.py        #   角色注册表
-│   │   ├── detector.py        #   循环检测
-│   │   ├── cost.py            #   成本追踪
-│   │   ├── learner.py         #   空闲学习循环
-│   │   └── style.py           #   UI 主题引擎
-│   ├── llm/                   # LLM 层
-│   │   ├── client.py          #   客户端（重试/回退/流式）
-│   │   └── pool.py            #   能力池（端点管理）
-│   ├── knowledge/             # 知识库
-│   │   ├── vector.py          #   ChromaDB 向量库
-│   │   └── files.py           #   文件知识库
-│   ├── security/              # 安全子系统
-│   │   ├── scanner.py         #   代码扫描
-│   │   ├── filter.py          #   命令分级过滤
-│   │   ├── sandbox.py         #   udocker 沙箱
-│   │   ├── mining.py          #   挖矿检测
-│   │   └── supply.py          #   供应链防火墙
-│   ├── tools/                 # 工具系统
-│   │   ├── registry.py        #   工具注册
-│   │   ├── library.py         #   零件库
-│   │   ├── assembler.py       #   工具组装器
-│   │   └── builtin/           #   内置工具
-│   └── web/                   # Web 层
-│       ├── api.py             #   FastAPI 路由
-│       ├── ws.py              #   WebSocket 处理
-│       └── push.py            #   WebSocket 推送
-│
-├── ui/                        # 前端包
-│   ├── app.py                 #   Streamlit 主入口
-│   ├── components/            #   UI 组件
-│   │   ├── chat.py            #     聊天视图
-│   │   ├── dashboard.py       #     仪表盘
-│   │   ├── config_panel.py    #     配置面板
-│   │   └── style.py           #     CSS 样式注入
+│   │   ├── config.py          #   配置管理 (热重载超酷的)
+│   │   ├── database.py        #   SQLite + Fernet 加密 (数据保护盾！)
+│   │   ├── logger.py          #   loguru 日志 (记录一切！)
+│   │   └── state.py           #   任务状态快照 (存档小天才)
+│   ├── engine/                # 工作流引擎 (动力源泉！)
+│   │   ├── machine.py         #   LangGraph 状态机 (超级大脑)
+│   │   ├── tasks.py           #   任务生命周期 (生老病死了解一下)
+│   │   ├── room.py            #   会议室 (多 agent 开会地！)
+│   │   ├── board.py           #   Kanban 看板 (任务进度一目了然)
+│   │   ├── registry.py        #   角色注册表 (身份证登记处)
+│   │   ├── detector.py        #   循环检测 (死循环退退退！)
+│   │   ├── cost.py            #   成本追踪 (算账小能手)
+│   │   ├── learner.py         #   空闲学习循环 (爱学习的酱酱)
+│   │   └── style.py           #   UI 主题引擎 (换装play！)
+│   ├── llm/                   # LLM 层 (AI 大脑！)
+│   │   ├── client.py          #   客户端 (重试/回退/流式全都会)
+│   │   └── pool.py            #   能力池 (端点管理大师)
+│   ├── knowledge/             # 知识库 (AI 的小脑瓜)
+│   │   ├── vector.py          #   ChromaDB 向量库 (存记忆的地方)
+│   │   └── files.py           #   文件知识库 (资料库！)
+│   ├── security/              # 安全子系统 (保安团！
+│   │   ├── scanner.py         #   代码扫描 (找虫虫！)
+│   │   ├── filter.py          #   命令分级过滤 (分级管理)
+│   │   ├── sandbox.py         #   udocker 沙箱 (安全隔离屋)
+│   │   ├── mining.py          #   挖矿检测 (赶走挖矿怪！)
+│   │   └── supply.py          #   供应链防火墙 (守住大门！)
+│   ├── tools/                 # 工具系统 (百宝箱！)
+│   │   ├── registry.py        #   工具注册 (登记处)
+│   │   ├── library.py         #   零件库 (零件大仓库)
+│   │   ├── assembler.py      #   工具组装器 (组装大师！)
+│   │   └── builtin/           #   内置工具 (自带的宝藏)
+│   └── web/                   # Web 层 (网络接口！)
+│       ├── api.py             #   FastAPI 路由 (路由小达人)
+│       ├── ws.py              #   WebSocket 处理 (实时通信桥梁)
+│       └── push.py            #   WebSocket 推送 (消息推送员)
+
+├── ui/                        # 前端包 ( Streamlit 版本 )
+│   ├── app.py                 #   Streamlit 主入口 (开始的地方)
+│   ├── components/            #   UI 组件 (积木们！)
+│   │   ├── chat.py            #     聊天视图 (聊聊天～)
+│   │   ├── dashboard.py       #     仪表盘 (数据展示台)
+│   │   ├── config_panel.py    #     配置面板 (设置小天地)
+│   │   └── style.py           #     CSS 样式注入 (美美哒！)
 │   └── utils/                 #   前端工具
-│       ├── api.py             #     HTTP 客户端
-│       └── ws.py              #     WebSocket 客户端
-│
+│       ├── api.py             #     HTTP 客户端 (请求小助手)
+│       └── ws.py              #     WebSocket 客户端 (实时小通道)
+
 ├── config/                    # 配置 & 模板
-│   ├── config.yaml            #   主配置
-│   ├── prompts/               #   Jinja2 提示词模板
-│   └── themes/                #   角色主题（catgirl / programmer）
-│
+│   ├── config.yaml            #   主配置 (总设置！)
+│   ├── prompts/               #   Jinja2 提示词模板 (prompt 们～)
+│   └── themes/                #   角色主题 (catgirl / programmer)
+
 ├── scripts/                   # 工具脚本
-│   ├── preflight.sh           #   环境预检
-│   └── test_run.py            #   功能测试
-│
+│   ├── preflight.sh           #   环境预检 (出发前检查！)
+│   └── test_run.py            #   功能测试 (跑一跑试试看)
+
 ├── .streamlit/                # Streamlit 配置
 │   └── config.toml            #   主题 / 服务配置
-│
+
 └── data/                      # 运行时数据（gitignored）
-    ├── .key                   #   加密密钥
-    ├── chromadb/              #   向量数据库
-    ├── db/                    #   SQLite 数据库
-    ├── logs/                  #   日志文件
-    ├── outputs/               #   交付产物
-    ├── states/                #   任务快照
-    └── knowledge_base/        #   知识文件
+    ├── .key                   #   加密密钥 (保密小密码)
+    ├── chromadb/              #   向量数据库 (记忆仓库)
+    ├── db/                    #   SQLite 数据库 (数据家)
+    ├── logs/                  #   日志文件 (记录酱～)
+    ├── outputs/               #   交付产物 (产出们！)
+    ├── states/                #   任务快照 (存档点！)
+    └── knowledge_base/        #   知识文件 (学习资料！)
 ```
 
 ---
 
-## 常见问题
+## ❓ 常见问题 (来看看有没有你遇到的！)
 
 **Q: 启动后 API 返回 502？**  
-A: 确认 LLM 端点已启动并可访问。默认使用 `http://localhost:11434`（Ollama）。
+A: 确认 LLM 端点已启动并可访问喵～默认用 `http://localhost:11434`（Ollama）哦！
 
 **Q: 如何更换 AI 模型？**  
-A: 在 UI 的 Config Panel 中添加 AI Instance，或修改 `config/config.yaml` 的 `ai_pool.instances`。
+A: 在 UI 的 Config Panel 中添加 AI Instance，或修改 `config/config.yaml` 的 `ai_pool.instances`就可以啦！
 
 **Q: 任务卡死怎么办？**  
-A: 可在 UI 中撤销任务，或通过 API `POST /api/tasks/{id}/cancel` 取消后恢复。
+A: 可以在 UI 中撤销任务，或通过 API `POST /api/tasks/{id}/cancel` 取消后恢复哦！
 
 **Q: 如何在 Windows 上运行？**  
-A: 使用 `python main.py` 启动后端，另一个终端运行 `streamlit run ui/app.py`。
+A: 使用 `python main.py` 启动后端，另一个终端运行 `streamlit run ui/app.py` 就可以！
 
 **Q: 如何调试 Agent 输出？**  
-A: 设置 `system.log_level: DEBUG` 查看详细日志，或在 UI 的 Chat 页面查看 L2 层消息。
+A: 设置 `system.log_level: DEBUG` 查看详细日志，或在 UI 的 Chat 页面查看 L2 层消息～
 
 ---
 
-## 许可
+## 📜 许可
 
-MIT License — 详见项目 LICENSE 文件。
+MIT License — 详见项目 LICENSE 文件喵～ ✿
+
+最后，谢谢使用 IReckon！希望它能帮你省掉超多麻烦！(๑•̀ᴗ-)✧ 一起加油吧！

@@ -30,7 +30,7 @@ class IReckonApp:
     def __init__(self):
         self._shutdown_event = asyncio.Event()  # 关闭信号灯～
         self._tasks = []                          # 存放后台任务们
-        self._frontend_proc = None                # 前端进程（Streamlit酱）
+        self._frontend_proc = None                # 前端进程（Vue酱～）
 
     async def initialize(self):
         """初始化所有组件，系统要开始工作啦！"""
@@ -58,8 +58,7 @@ class IReckonApp:
         try:
             subprocess.run(["npm", "--version"], capture_output=True, check=True)
         except (subprocess.CalledProcessError, FileNotFoundError):
-            logger.warning("npm未安装，使用Streamlit备选")
-            self._start_streamlit_fallback(root)
+            logger.warning("npm未安装，前端无法启动喵～")
             return
         
         # 检查node_modules是否存在，不存在则安装
@@ -74,7 +73,6 @@ class IReckonApp:
                 )
             except subprocess.CalledProcessError as e:
                 logger.warning(f"前端依赖安装失败: {e}")
-                self._start_streamlit_fallback(root)
                 return
         
         # 启动Vue前端
@@ -86,20 +84,6 @@ class IReckonApp:
             stderr=subprocess.PIPE
         )
     
-    def _start_streamlit_fallback(self, root):
-        """Streamlit备选方案"""
-        try:
-            import streamlit
-            script = os.path.join(root, "ui", "app.py")
-            self._frontend_proc = subprocess.Popen(
-                [sys.executable, "-m", "streamlit", "run", script,
-                 "--server.port", "8501", "--server.headless", "true",
-                 "--browser.gatherUsageStats", "false"],
-                cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-            )
-        except Exception as e:
-            logger.warning(f"前端启动失败: {e}")
-
     async def _check_update(self):
         """检查更新，看看有没有新版本可以玩呀～"""
         if not updater.should_check():

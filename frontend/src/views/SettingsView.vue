@@ -138,6 +138,14 @@ function formatValue(val) {
   max-width: 700px;
 }
 
+.section {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section:hover {
+  box-shadow: var(--shadow-md);
+}
+
 .section-title {
   display: flex;
   align-items: center;
@@ -145,6 +153,7 @@ function formatValue(val) {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 14px;
+  font-family: 'Noto Serif SC', serif;
 }
 
 .section-desc {
@@ -164,19 +173,22 @@ function formatValue(val) {
   justify-content: space-between;
   align-items: center;
   padding: 7px 10px;
-  background: var(--bg-primary);
+  background: var(--bg-glass);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border-radius: var(--radius-sm);
   font-size: 12px;
+  border: 1px solid var(--glass-border-subtle);
 }
 
 .config-key {
   color: var(--text-secondary);
-  font-family: monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .config-val {
   color: var(--text-primary);
-  font-family: monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   max-width: 60%;
   overflow: hidden;
@@ -249,5 +261,13 @@ function formatValue(val) {
 .about-desc {
   color: var(--text-muted);
   font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .settings-grid { max-width: 100% !important; }
+  .update-actions { flex-direction: column; }
+  .update-actions .btn { width: 100%; }
+  .config-row { flex-wrap: wrap; gap: 4px; }
+  .config-val { max-width: 100% !important; }
 }
 </style>

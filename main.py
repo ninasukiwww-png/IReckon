@@ -4,7 +4,7 @@ IReckon 主入口文件 (๑•̀ᴗ-)✧
 项目的启动点，整合所有模块让系统跑起来～
 """
 
-import asyncio, io, logging, os, signal, subprocess, sys, webbrowser
+import asyncio, io, logging, os, signal, socket, subprocess, sys, webbrowser
 
 # 让输出更乖，不闹脾气～ (防止编码问题)
 os.environ["UVICORN_ACCESS_LOGGING"] = "0"
@@ -23,6 +23,17 @@ from app.engine.learner import idle_loop
 from app.web.ws import log_consumer
 from app.tools.registry import register_builtin_tools
 
+
+def _get_lan_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0.1)
+        s.connect(("10.255.255.255", 1))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except:
+        return None
 
 class IReckonApp:
     """IReckon 应用主类，统筹管理整个系统～"""
@@ -130,10 +141,13 @@ async def start_backend():
     config = uvicorn.Config("app.web.api:app", host=host, port=port, log_level="warning", loop="asyncio", access_log=False)
     
     # 打印启动信息，超酷炫的！
+    lan_ip = _get_lan_ip()
+    lan_line = f"  局域网访问  http://{lan_ip}:3000\n" if lan_ip else ""
     logger.info(f"\n{'='*46}\n  IReckon v{config_manager.get('system.version')} 已启动\n{'='*46}\n"
                 f"  后端 API   http://{host}:{port}\n"
                 f"  交互文档   http://{host}:{port}/docs\n"
                 f"  前端界面   http://localhost:3000\n"
+                f"{lan_line}"
                 f"  健康检查   http://{host}:{port}/api/health\n"
                 f"{'='*46}")
     

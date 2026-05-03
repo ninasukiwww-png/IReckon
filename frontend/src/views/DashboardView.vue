@@ -147,23 +147,31 @@ function formatTime(ts) {
   align-items: center;
   gap: 14px;
   padding: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.stat-icon-box.purple { background: rgba(var(--primary), 0.15); color: var(--primary); }
-.stat-icon-box.yellow { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
-.stat-icon-box.green { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-.stat-icon-box.red { background: rgba(239, 68, 68, 0.15); color: var(--error); }
-.stat-icon-box.blue { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+.stat-icon-box.purple { background: rgba(60, 150, 202, 0.1); color: var(--primary); }
+.stat-icon-box.yellow { background: rgba(255, 193, 7, 0.12); color: var(--warning); }
+.stat-icon-box.green { background: rgba(0, 200, 83, 0.12); color: var(--success); }
+.stat-icon-box.red { background: rgba(244, 67, 54, 0.12); color: var(--error); }
+.stat-icon-box.blue { background: rgba(3, 201, 215, 0.12); color: var(--info); }
 
 .stat-info {
   display: flex;
@@ -171,7 +179,7 @@ function formatTime(ts) {
 }
 
 .stat-value {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.2;
@@ -189,10 +197,11 @@ function formatTime(ts) {
 }
 
 .panel-title {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   margin-bottom: 16px;
   color: var(--text-primary);
+  font-family: 'Noto Serif SC', serif;
 }
 
 .system-info {
@@ -247,7 +256,13 @@ function formatTime(ts) {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  transition: background 0.15s;
+}
+
+.activity-item:hover {
+  background: var(--bg-hover);
 }
 
 .activity-dot {
@@ -287,5 +302,9 @@ function formatTime(ts) {
 @media (max-width: 1000px) {
   .stats-row { grid-template-columns: repeat(3, 1fr); }
   .panels-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr) !important; }
 }
 </style>

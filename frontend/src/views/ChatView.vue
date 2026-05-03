@@ -278,8 +278,10 @@ function renderContent(content) {
 .chat-sidebar {
   width: 260px;
   flex-shrink: 0;
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border-light);
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-right: 1px solid var(--glass-border);
   display: flex;
   flex-direction: column;
 }
@@ -316,17 +318,19 @@ function renderContent(content) {
   padding: 10px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s ease;
   margin-bottom: 4px;
+  border: 1px solid transparent;
 }
 
 .task-item:hover {
   background: var(--bg-hover);
+  border-color: var(--border-light);
 }
 
 .task-item.active {
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid var(--border-color);
+  background: rgba(60, 150, 202, 0.08);
+  border-color: rgba(60, 150, 202, 0.2);
 }
 
 .task-item-top {
@@ -376,8 +380,10 @@ function renderContent(content) {
   align-items: center;
   justify-content: space-between;
   padding: 14px 24px;
-  border-bottom: 1px solid var(--border-light);
-  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--glass-border);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
 }
 
 .chat-header-left {
@@ -387,9 +393,10 @@ function renderContent(content) {
 }
 
 .chat-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
+  font-family: 'Noto Serif SC', serif;
 }
 
 .connection-dot {
@@ -444,8 +451,11 @@ function renderContent(content) {
 .msg-avatar {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
-  background: var(--bg-tertiary);
+  border-radius: 10px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -458,6 +468,7 @@ function renderContent(content) {
 .message-own .msg-avatar {
   background: var(--accent-gradient);
   color: white;
+  border: none;
 }
 
 .msg-body {
@@ -483,14 +494,22 @@ function renderContent(content) {
 }
 
 .msg-content {
-  padding: 10px 14px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
+  padding: 12px 16px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border-subtle);
   border-radius: var(--radius-lg);
   font-size: 13px;
   line-height: 1.6;
   color: var(--text-primary);
   word-break: break-word;
+  transition: all 0.2s ease;
+}
+
+.msg-content:hover {
+  border-color: var(--glass-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .message-own .msg-content {
@@ -499,15 +518,20 @@ function renderContent(content) {
   border: none;
 }
 
+.message-own .msg-content:hover {
+  box-shadow: 0 4px 16px rgba(60, 150, 202, 0.25);
+}
+
 .message-system .msg-content {
-  background: var(--bg-tertiary);
+  background: var(--bg-glass);
   text-align: center;
   font-size: 12px;
   color: var(--text-muted);
+  border-color: transparent;
 }
 
 .msg-content :deep(pre) {
-  background: #00000030;
+  background: rgba(0, 0, 0, 0.2);
   padding: 10px;
   border-radius: 8px;
   overflow-x: auto;
@@ -516,7 +540,7 @@ function renderContent(content) {
 }
 
 .msg-content :deep(code) {
-  font-family: 'Fira Code', 'Cascadia Code', monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
   font-size: 12px;
 }
 
@@ -535,7 +559,7 @@ function renderContent(content) {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--text-muted);
+  background: var(--primary);
   animation: typingBounce 1.4s infinite ease-in-out both;
 }
 
@@ -552,8 +576,10 @@ function renderContent(content) {
   display: flex;
   gap: 10px;
   padding: 16px 24px;
-  border-top: 1px solid var(--border-light);
-  background: var(--bg-secondary);
+  border-top: 1px solid var(--glass-border);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
 }
 
 .msg-input {
@@ -570,5 +596,36 @@ function renderContent(content) {
   align-self: flex-end;
   padding: 10px 18px;
   border-radius: var(--radius-lg);
+}
+
+@media (max-width: 768px) {
+  .chat-view { flex-direction: column !important; }
+  .chat-sidebar {
+    width: 100% !important;
+    max-height: 160px;
+    border-right: none !important;
+    border-bottom: 1px solid var(--glass-border);
+    flex-shrink: 0;
+  }
+  .message { max-width: 92% !important; }
+  .chat-header { padding: 10px 14px !important; }
+  .messages-area { padding: 14px !important; }
+  .input-area { padding: 12px 14px !important; }
+}
+
+@media (max-width: 480px) {
+  .chat-header-left { margin-left: 40px; }
+  .chat-header { padding: 8px 12px !important; }
+  .chat-title { font-size: 14px !important; }
+  .messages-area { padding: 10px !important; }
+  .input-area { padding: 8px 12px !important; flex-direction: column; gap: 8px; }
+  .msg-input { min-height: 36px; font-size: 12px !important; }
+  .send-btn { width: 100%; justify-content: center; }
+  .msg-content { font-size: 12px !important; padding: 10px 12px !important; }
+  .message { max-width: 98% !important; }
+  .chat-sidebar { max-height: 120px; }
+  .sidebar-top { padding: 10px 12px; }
+  .task-list { padding: 4px; }
+  .task-item { padding: 8px 10px; }
 }
 </style>

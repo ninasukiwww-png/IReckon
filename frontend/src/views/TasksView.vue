@@ -88,6 +88,13 @@ function formatTime(ts) {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--glass-border);
 }
 
 .task-card-header {
@@ -99,7 +106,7 @@ function formatTime(ts) {
 .task-id {
   font-size: 12px;
   color: var(--text-muted);
-  font-family: monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .task-request {
@@ -134,5 +141,11 @@ function formatTime(ts) {
 .btn-sm {
   padding: 5px 12px;
   font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .tasks-grid { grid-template-columns: 1fr !important; }
+  .task-card { gap: 8px; }
+  .task-actions { flex-wrap: wrap; }
 }
 </style>

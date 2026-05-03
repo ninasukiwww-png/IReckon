@@ -44,10 +44,10 @@ class SendMessageRequest(BaseModel):
     layer: str = "L1"
 
 class AIInstanceRequest(BaseModel):
-    id: str
-    name: str
-    endpoint: str
-    model: str
+    id: str = ""
+    name: str = ""
+    endpoint: str = ""
+    model: str = ""
     api_key: str = ""
     parameters: Dict[str, Any] = {}
     tags: List[str] = []
@@ -112,14 +112,18 @@ async def list_ai_instances():
 
 @app.post("/api/ai-instances")
 async def create_ai_instance(inst: AIInstanceRequest):
-    cap = AICapability(**inst.model_dump())
+    data = inst.model_dump()
+    if not data.get("id"):
+        data["id"] = f"ai-{uuid.uuid4().hex[:12]}"
+    cap = AICapability(**data)
     await capability_pool.add_instance(cap)
-    return {"status": "ok"}
+    return {"status": "ok", "id": data["id"]}
 
 @app.put("/api/ai-instances/{instance_id}")
 async def update_ai_instance(instance_id: str, inst: AIInstanceRequest):
-    cap = AICapability(**inst.model_dump())
-    cap.id = instance_id
+    data = inst.model_dump(exclude_unset=True)
+    data["id"] = instance_id
+    cap = AICapability(**data)
     await capability_pool.update_instance(cap)
     return {"status": "ok"}
 

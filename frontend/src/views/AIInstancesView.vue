@@ -202,6 +202,30 @@ async function deleteInstance(id) {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.instance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.instance-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.instance-card:hover::before {
+  opacity: 1;
 }
 
 .instance-top {
@@ -211,9 +235,9 @@ async function deleteInstance(id) {
 }
 
 .instance-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background: var(--accent-gradient);
   display: flex;
   align-items: center;
@@ -222,6 +246,7 @@ async function deleteInstance(id) {
   font-weight: 700;
   color: white;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(60, 150, 202, 0.2);
 }
 
 .instance-info {
@@ -245,7 +270,10 @@ async function deleteInstance(id) {
   flex-direction: column;
   gap: 6px;
   padding: 10px 12px;
-  background: var(--bg-primary);
+  background: var(--bg-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border-subtle);
   border-radius: var(--radius-md);
 }
 
@@ -261,7 +289,7 @@ async function deleteInstance(id) {
 
 .detail-value {
   color: var(--text-primary);
-  font-family: monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   max-width: 180px;
   overflow: hidden;
@@ -276,7 +304,9 @@ async function deleteInstance(id) {
 
 .tag {
   padding: 2px 8px;
-  background: var(--bg-tertiary);
+  background: var(--bg-glass);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border-radius: 8px;
   font-size: 11px;
   color: var(--text-secondary);
@@ -294,12 +324,13 @@ async function deleteInstance(id) {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .modal {
@@ -307,12 +338,25 @@ async function deleteInstance(id) {
   max-width: 92vw;
   max-height: 88vh;
   overflow-y: auto;
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-title {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 20px;
+  font-family: 'Noto Serif SC', serif;
 }
 
 .form-row {
@@ -358,7 +402,7 @@ async function deleteInstance(id) {
   border-radius: 10px;
   position: relative;
   transition: background 0.2s;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
 }
 
 .switch-label input:checked + .switch-track {
@@ -379,5 +423,13 @@ async function deleteInstance(id) {
 
 .switch-label input:checked + .switch-track .switch-thumb {
   transform: translateX(16px);
+}
+
+@media (max-width: 480px) {
+  .instances-grid { grid-template-columns: 1fr !important; }
+  .instance-card { gap: 10px; }
+  .instance-actions { flex-wrap: wrap; }
+  .instance-actions .btn { flex: 1; min-width: 60px; }
+  .modal { width: 95vw !important; }
 }
 </style>

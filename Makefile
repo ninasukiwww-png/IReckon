@@ -16,7 +16,7 @@ install-all: install install-dev install-frontend ## Install everything
 # ─── Development ──────────────────────────────────────────────────────────────
 
 dev: ## Start both backend and frontend
-	python main.py
+	python scripts/run.sh
 
 dev-backend: ## Start backend server only
 	python -m uvicorn app.web.api:app --host 0.0.0.0 --port 8000 --reload
@@ -74,7 +74,7 @@ pre-commit-run: ## Run pre-commit on all files
 # ─── Build ────────────────────────────────────────────────────────────────────
 
 build: ## Build Windows executable
-	python build_exe.py
+	python scripts/build_exe.py
 
 build-frontend: ## Build frontend for production
 	cd frontend && npm run build

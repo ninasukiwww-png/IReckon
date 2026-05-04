@@ -14,15 +14,24 @@ def clean():
             shutil.rmtree(d)
 
 
-def build_backend():
-    print("=== 构建后端 ===")
-    subprocess.check_call([
+def build():
+    print("=== 构建 IReckon 单体 EXE ===")
+
+    frontend_dist = Path("frontend") / "dist"
+    if not frontend_dist.is_dir():
+        print("错误: 前端产物 frontend/dist/ 不存在，请先运行 npm run build")
+        sys.exit(1)
+
+    cmd = [
         sys.executable, "-m", "PyInstaller",
-        "--name", "ireckon-backend",
+        "--name", "IReckon",
         "--distpath", str(DIST),
         "--workpath", str(BUILD),
         "--add-data", f"config{os.pathsep}config",
+        "--add-data", f"frontend/dist{os.pathsep}frontend/dist",
         "--hidden-import", "app.web.api",
+        "--hidden-import", "app.web.ws",
+        "--hidden-import", "app.web.push",
         "--hidden-import", "app.engine.self_improve",
         "--hidden-import", "app.engine.style",
         "--hidden-import", "app.engine.learner",
@@ -54,75 +63,56 @@ def build_backend():
         "--hidden-import", "app.security.supply",
         "--hidden-import", "app.knowledge.vector",
         "--hidden-import", "app.knowledge.files",
-        "--hidden-import", "app.web.ws",
-        "--hidden-import", "app.web.push",
         "--hidden-import", "app.core.updater",
         "--hidden-import", "uvicorn",
+        "--hidden-import", "uvicorn.protocols",
+        "--hidden-import", "uvicorn.server",
+        "--hidden-import", "uvicorn.loops",
+        "--hidden-import", "uvicorn.loops.auto",
         "--hidden-import", "multipart",
         "--hidden-import", "watchdog",
+        "--hidden-import", "aiosqlite",
+        "--hidden-import", "jinja2",
         "--collect-submodules", "chromadb",
+        "--collect-all", "app",
         "--noconfirm",
         "--onedir",
+        "--console",
         "main.py",
-    ])
-    print("后端构建完成")
+    ]
 
-
-def build_frontend():
-    print("=== 构建前端 ===")
-    subprocess.check_call([
-        sys.executable, "-m", "PyInstaller",
-        "--name", "ireckon-frontend",
-        "--distpath", str(DIST),
-        "--workpath", str(BUILD),
-        "--add-data", f"ui{os.pathsep}ui",
-        "--add-data", f"config{os.pathsep}config",
-        "--add-data", f".streamlit{os.pathsep}.streamlit",
-        "--hidden-import", "streamlit.web.bootstrap",
-        "--collect-all", "streamlit",
-        "--collect-all", "Pillow",
-        "--noconfirm",
-        "--onedir",
-        "run_streamlit.py",
-    ])
-    print("前端构建完成")
+    subprocess.check_call(cmd)
+    print("EXE 构建完成")
 
 
 def create_launcher():
-    launcher = """@echo off
-title IReckon AI Factory v2.1.0
+    content = """@echo off
+title IReckon AI Factory
 echo ============================================
-echo   IReckon AI Factory v2.1.0
+echo   IReckon AI Factory
 echo ============================================
 echo.
-start "" "%~dp0ireckon-backend\ireckon-backend.exe"
-echo [BACKEND] 启动中... (port 8000)
-timeout /t 3 /nobreak >nul
-start "" "%~dp0ireckon-frontend\ireckon-frontend.exe"
-echo [FRONTEND] 启动中... (port 8501)
-timeout /t 5 /nobreak >nul
+start "" "%~dp0IReckon.exe"
 echo.
 echo   Backend: http://localhost:8000/docs
-echo   Frontend: http://localhost:8501
+echo   Frontend: http://localhost:8000
 echo.
-start http://localhost:8501
+timeout /t 5 /nobreak >nul
+start http://localhost:8000
 echo 关闭此窗口即可停止服务
 echo.
 pause >nul
-taskkill /f /im ireckon-backend.exe >nul 2>&1
-taskkill /f /im ireckon-frontend.exe >nul 2>&1
 """
-    (DIST / "启动IReckon.bat").write_text(launcher, encoding="gbk")
+    (DIST / "启动IReckon.bat").write_text(content, encoding="gbk")
     print("启动脚本已创建")
 
 
 def main():
     clean()
-    build_backend()
-    build_frontend()
+    build()
     create_launcher()
     size = sum(f.stat().st_size for f in DIST.rglob("*") if f.is_file())
-    print(f"\n✅ 打包完成! 输出: {DIST}")
+    print(f"\n打包完成! 输出: {DIST}")
     print(f"   总大小: {size / 1024 / 1024:.0f} MB")
     print(f"   运行 {DIST / '启动IReckon.bat'} 即可启动")
 

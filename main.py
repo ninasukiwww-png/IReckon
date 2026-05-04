@@ -57,7 +57,9 @@ class IReckonApp:
         self._tasks.append(asyncio.create_task(idle_loop.run()))    # 空闲学习loop
         self._tasks.append(asyncio.create_task(log_consumer()))     # 日志消费者
         
-        self._start_frontend()            # 启动前端界面
+        # 非打包模式（源码运行）时启动独立前端进程
+        if not getattr(sys, 'frozen', False):
+            self._start_frontend()
         logger.info("系统初始化完成")
 
     def _start_frontend(self):
@@ -142,16 +144,16 @@ async def start_backend():
     
     # 打印启动信息，超酷炫的！
     lan_ip = _get_lan_ip()
-    lan_line = f"  局域网访问  http://{lan_ip}:3000\n" if lan_ip else ""
+    lan_line = f"  局域网访问  http://{lan_ip}:{port}\n" if lan_ip else ""
     logger.info(f"\n{'='*46}\n  IReckon v{config_manager.get('system.version')} 已启动\n{'='*46}\n"
                 f"  后端 API   http://{host}:{port}\n"
                 f"  交互文档   http://{host}:{port}/docs\n"
-                f"  前端界面   http://localhost:3000\n"
+                f"  前端界面   http://{host}:{port}\n"
                 f"{lan_line}"
                 f"  健康检查   http://{host}:{port}/api/health\n"
                 f"{'='*46}")
     
-    webbrowser.open("http://localhost:3000")  # 自动打开浏览器，懒人福利！
+    webbrowser.open(f"http://{host}:{port}")  # 自动打开浏览器，懒人福利！
     await uvicorn.Server(config).serve()
 
 

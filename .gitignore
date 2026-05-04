@@ -75,6 +75,7 @@ env/
 # PyInstaller
 *.manifest
 *.spec
+!/buildozer.spec
 /build
 
 # Jupyter

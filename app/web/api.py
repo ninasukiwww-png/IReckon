@@ -1,7 +1,11 @@
+import os
+import sys
+from pathlib import Path
 from fastapi import FastAPI, HTTPException, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import asyncio
@@ -21,6 +25,17 @@ from .ws import websocket_endpoint
 
 app = FastAPI(title="IReckon AI Factory", version="2.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+
+# Serve Vue frontend dist
+_frontend_candidates = []
+_meipass = getattr(sys, '_MEIPASS', None)
+if _meipass:
+    _frontend_candidates.append(Path(_meipass) / "frontend" / "dist")
+_frontend_candidates.append(Path(__file__).parent.parent.parent / "frontend" / "dist")
+for fp in _frontend_candidates:
+    if fp.is_dir():
+        app.mount("/", StaticFiles(directory=str(fp), html=True), name="frontend")
+        break
 
 @app.exception_handler(RequestValidationError)
 async def validation_handler(request, exc):
